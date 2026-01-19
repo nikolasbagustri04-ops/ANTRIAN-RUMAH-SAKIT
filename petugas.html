@@ -3,38 +3,108 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Antrian RS - Petugas (Live)</title>
+<title>Antrian RS - Petugas (Modern)</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 <style>
+    /* Reset & Font */
+    * {margin:0; padding:0; box-sizing:border-box; font-family:'Poppins', sans-serif;}
     body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        background-image: url('hospital 2.jpeg');
-        background-size: cover;
-        background-position: center;
-        background-attachment: fixed;
-        color: white;
-        text-shadow: 1px 1px 2px black;
+        min-height: 100vh;
+        background: linear-gradient(135deg, #6a11cb, #2575fc);
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        padding:20px;
     }
+    /* Glass Container */
     .container {
-        background: rgba(0,0,0,0.6);
-        width: 90%;
-        max-width: 500px;
-        margin: 50px auto;
-        padding: 20px;
-        border-radius: 12px;
-    }
-    input, button {
+        background: rgba(255,255,255,0.1);
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+        border-radius: 20px;
+        padding: 30px 25px;
         width: 100%;
-        padding: 10px;
-        margin-top: 8px;
-        border-radius: 8px;
-        border: none;
+        max-width: 500px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        color: #fff;
+        text-align: center;
+        animation: fadeIn 1s ease;
     }
-    button { cursor: pointer; background: orange; color: black; font-weight: bold; }
-    h2{text-align:center;}
-    table {width:100%; background:white; color:black; border-collapse: collapse; margin-top:10px;}
-    td,th{border:1px solid black; padding:6px; text-align:center;}
-    .hapusBtn { background:red; color:white; border-radius:6px; padding:5px; cursor:pointer;}
+    h2 {
+        margin-bottom: 20px;
+        font-weight: 600;
+        font-size: 1.8rem;
+        letter-spacing: 1px;
+    }
+    input {
+        width: 100%;
+        padding: 12px 15px;
+        margin: 10px 0;
+        border-radius: 12px;
+        border: none;
+        outline: none;
+        font-size: 1rem;
+        background: rgba(255,255,255,0.2);
+        color: #fff;
+        transition: 0.3s;
+    }
+    input::placeholder {color: rgba(255,255,255,0.7);}
+    input:focus {background: rgba(255,255,255,0.3);}
+    button {
+        width: 100%;
+        padding: 12px;
+        margin-top: 15px;
+        border-radius: 12px;
+        border: none;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        background: linear-gradient(135deg,#ffb347,#ffcc33);
+        color: #000;
+        transition: 0.3s;
+    }
+    button:hover {transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.3);}
+    
+    /* Table */
+    table {
+        width: 100%;
+        margin-top: 20px;
+        border-collapse: collapse;
+        background: rgba(255,255,255,0.1);
+        color: #fff;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+    th, td {
+        padding: 12px;
+        text-align: center;
+        border-bottom: 1px solid rgba(255,255,255,0.2);
+        font-size: 0.95rem;
+    }
+    th {background: rgba(255,255,255,0.2);}
+    .hapusBtn {
+        background: linear-gradient(135deg,#ff416c,#ff4b2b);
+        color: #fff;
+        border:none;
+        border-radius:8px;
+        padding:6px 10px;
+        cursor:pointer;
+        transition:0.3s;
+    }
+    .hapusBtn:hover {transform: scale(1.1);}
+
+    /* Animasi */
+    @keyframes fadeIn {from{opacity:0; transform: translateY(-20px);} to{opacity:1; transform: translateY(0);}}
+
+    /* Logout */
+    .logoutBtn {
+        margin-top: 15px;
+        background: rgba(255,255,255,0.2);
+        color:#fff;
+        font-weight:600;
+        transition:0.3s;
+    }
+    .logoutBtn:hover {background: rgba(255,255,255,0.4);}
 </style>
 </head>
 <body>
@@ -47,7 +117,7 @@
 </div>
 
 <div class="container" id="antrianBox" style="display:none;">
-    <h2>Daftar Antrian Pasien (Live)</h2>
+    <h2>Daftar Antrian Pasien</h2>
     <table id="tabelAntrian">
         <tr>
             <th>No</th>
@@ -56,7 +126,7 @@
             <th>Aksi</th>
         </tr>
     </table>
-    <button onclick="logout()">Logout</button>
+    <button class="logoutBtn" onclick="logout()">Logout</button>
 </div>
 
 <script>
@@ -69,110 +139,7 @@ function login() {
     document.getElementById("antrianBox").style.display = "block";
     
     muatAntrian();
-    intervalID = setInterval(muatAntrian, 1000); // update tiap 1 detik
-}
-
-function muatAntrian(){
-    let antre = JSON.parse(localStorage.getItem("antrian")) || [];
-    let tabel = document.getElementById("tabelAntrian");
-    tabel.innerHTML = "<tr><th>No</th><th>Nama</th><th>Ruangan</th><th>Aksi</th></tr>";
-
-    antre.forEach((p,i)=>{
-        let row = tabel.insertRow();
-        row.insertCell(0).innerHTML = i+1;
-        row.insertCell(1).innerHTML = p.nama;
-        row.insertCell(2).innerHTML = p.ruangan;
-        row.insertCell(3).innerHTML = `<button class='hapusBtn' onclick='hapus(${i})'>Selesai</button>`;
-    });
-}
-
-function hapus(idx){
-    let antre = JSON.parse(localStorage.getItem("antrian")) || [];
-    antre.splice(idx,1);
-    localStorage.setItem("antrian", JSON.stringify(antre));
-    muatAntrian();
-}
-
-function logout(){
-    clearInterval(intervalID);
-    document.getElementById("antrianBox").style.display="none";
-    document.getElementById("loginBox").style.display="block";
-}
-</script>
-
-</body>
-</html><!DOCTYPE html>
-<html lang="id">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Antrian RS - Petugas (Live)</title>
-<style>
-    body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        background-image: url('hospital 2.jpeg');
-        background-size: cover;
-        background-position: center;
-        background-attachment: fixed;
-        color: white;
-        text-shadow: 1px 1px 2px black;
-    }
-    .container {
-        background: rgba(0,0,0,0.6);
-        width: 90%;
-        max-width: 500px;
-        margin: 50px auto;
-        padding: 20px;
-        border-radius: 12px;
-    }
-    input, button {
-        width: 100%;
-        padding: 10px;
-        margin-top: 8px;
-        border-radius: 8px;
-        border: none;
-    }
-    button { cursor: pointer; background: orange; color: black; font-weight: bold; }
-    h2{text-align:center;}
-    table {width:100%; background:white; color:black; border-collapse: collapse; margin-top:10px;}
-    td,th{border:1px solid black; padding:6px; text-align:center;}
-    .hapusBtn { background:red; color:white; border-radius:6px; padding:5px; cursor:pointer;}
-</style>
-</head>
-<body>
-
-<div class="container" id="loginBox">
-    <h2>Login Petugas</h2>
-    <input id="username" type="text" placeholder="Username">
-    <input id="password" type="password" placeholder="Password">
-    <button onclick="login()">Masuk</button>
-</div>
-
-<div class="container" id="antrianBox" style="display:none;">
-    <h2>Daftar Antrian Pasien (Live)</h2>
-    <table id="tabelAntrian">
-        <tr>
-            <th>No</th>
-            <th>Nama</th>
-            <th>Ruangan</th>
-            <th>Aksi</th>
-        </tr>
-    </table>
-    <button onclick="logout()">Logout</button>
-</div>
-
-<script>
-let intervalID = null;
-
-function login() {
-    if(document.getElementById("username").value === "") return alert("Isi Username");
-    
-    document.getElementById("loginBox").style.display = "none";
-    document.getElementById("antrianBox").style.display = "block";
-    
-    muatAntrian();
-    intervalID = setInterval(muatAntrian, 1000); // update tiap 1 detik
+    intervalID = setInterval(muatAntrian, 1000);
 }
 
 function muatAntrian(){
