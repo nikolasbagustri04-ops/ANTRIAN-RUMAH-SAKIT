@@ -42,6 +42,12 @@
         color: #222;
     }
 
+    #tanggalWaktu {
+        margin-bottom: 20px;
+        font-weight: 600;
+        color: #222;
+    }
+
     input, select, button {
         width: 100%;
         padding: 12px 15px;
@@ -121,6 +127,10 @@
 <!-- LOGIN -->
 <div class="container" id="loginBox">
     <h2>Login Pasien</h2>
+
+    <!-- Tanggal dan Waktu -->
+    <p id="tanggalWaktu"></p>
+
     <input id="username" type="text" placeholder="Username">
     <input id="password" type="password" placeholder="Password">
     <button class="btn-primary" onclick="login()">Masuk</button>
@@ -161,6 +171,31 @@
 </div>
 
 <script>
+function updateTanggalWaktu() {
+    const sekarang = new Date();
+    const hariArray = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
+    const bulanArray = ["Januari","Februari","Maret","April","Mei","Juni",
+                        "Juli","Agustus","September","Oktober","November","Desember"];
+    const hari = hariArray[sekarang.getDay()];
+    const tanggal = sekarang.getDate();
+    const bulan = bulanArray[sekarang.getMonth()];
+    const tahun = sekarang.getFullYear();
+
+    let jam = sekarang.getHours();
+    let menit = sekarang.getMinutes();
+    let detik = sekarang.getSeconds();
+
+    if(jam<10) jam="0"+jam;
+    if(menit<10) menit="0"+menit;
+    if(detik<10) detik="0"+detik;
+
+    const teks = `${hari}, ${tanggal} ${bulan} ${tahun} | ${jam}:${menit}:${detik}`;
+    document.getElementById("tanggalWaktu").innerText = teks;
+}
+
+setInterval(updateTanggalWaktu, 1000);
+updateTanggalWaktu();
+
 function login() {
     if (document.getElementById("username").value === "") return alert("Isi Username");
     document.getElementById("loginBox").style.display = "none";
