@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Antrian Rumah Sakit - Pasien</title>
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background-image: url('hospital.jpeg');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        color: white;
+        text-shadow: 1px 1px 2px black;
+    }
+    .container {
+        background: rgba(0,0,0,0.6);
+        width: 90%;
+        max-width: 450px;
+        margin: 50px auto;
+        padding: 20px;
+        border-radius: 12px;
+    }
+    input, select, button {
+        width: 100%;
+        padding: 10px;
+        margin-top: 8px;
+        border-radius: 8px;
+        border: none;
+    }
+    button { cursor: pointer; background: lime; }
+    h2{text-align:center;}
+    table {width:100%; background:white; color:black; border-collapse: collapse; margin-top:10px;}
+    td,th{border:1px solid black; padding:6px; text-align:center;}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="container" id="loginBox">
+    <h2>Login Pasien</h2>
+    <input id="username" type="text" placeholder="Username">
+    <input id="password" type="password" placeholder="Password">
+    <button onclick="login()">Masuk</button>
+    <button style="background:orange;" onclick="lihatTanpaLogin()">Lihat Antrian</button>
+</div>
+
+<!-- FORM DAFTAR -->
+<div class="container" id="formBox" style="display:none;">
+    <h2>Daftar Antrian</h2>
+    <input id="nama" type="text" placeholder="Nama Pasien">
+    <select id="penyakit">
+        <option value="Gigi">Sakit Gigi</option>
+        <option value="Ringan">Penyakit Ringan</option>
+        <option value="Mata">Sakit Mata</option>
+    </select>
+    <button onclick="daftar()">Kirim</button>
+</div>
+
+<!-- TIKET -->
+<div class="container" id="hasilBox" style="display:none;">
+    <h2>Tiket Antrian</h2>
+    <p id="hasil"></p>
+    <button onclick="cetakTiket()">Cetak Tiket</button>
+    <button onclick="tampilkanDaftar()">Lihat Daftar Antrian</button>
+</div>
+
+<!-- DAFTAR -->
+<div class="container" id="daftarBox" style="display:none;">
+    <h2>Daftar Antrian</h2>
+    <table id="tabelAntrian">
+        <tr>
+            <th>No</th>
+            <th>Nama</th>
+            <th>Ruangan</th>
+        </tr>
+    </table>
+    <button onclick="kembali()">Kembali</button>
+</div>
+
+<script>
+function login() {
+    if (document.getElementById("username").value === "") return alert("Isi Username");
+    document.getElementById("loginBox").style.display = "none";
+    document.getElementById("formBox").style.display = "block";
+}
+
+function daftar() {
+    let nama = document.getElementById("nama").value;
+    let penyakit = document.getElementById("penyakit").value;
+
+    if (nama === "") return alert("Isi Nama!");
+
+    let ruangan =
+        penyakit === "Gigi" ? "Dokter Gigi" :
+        penyakit === "Ringan" ? "Poli Umum" :
+        "Dokter Mata";
+
+    let antre = JSON.parse(localStorage.getItem("antrian")) || [];
+    antre.push({nama:nama, ruangan:ruangan});
+    localStorage.setItem("antrian", JSON.stringify(antre));
+
+    let nomor = antre.length;
+
+    document.getElementById("hasil").innerHTML =
+        "Nama: <b>"+nama+"</b><br>" +
+        "Ruangan: <b>"+ruangan+"</b><br>" +
+        "Nomor Antrian: <b>"+nomor+"</b>";
+
+    document.getElementById("formBox").style.display = "none";
+    document.getElementById("hasilBox").style.display = "block";
+}
+
+function tampilkanDaftar(){
+    let antre = JSON.parse(localStorage.getItem("antrian")) || [];
+    let tabel = document.getElementById("tabelAntrian");
+    tabel.innerHTML = "<tr><th>No</th><th>Nama</th><th>Ruangan</th></tr>";
+
+    antre.forEach((p,i)=>{
+        let row = tabel.insertRow();
+        row.insertCell(0).innerHTML = i+1;
+        row.insertCell(1).innerHTML = p.nama;
+        row.insertCell(2).innerHTML = p.ruangan;
+    });
+
+    document.getElementById("loginBox").style.display="none";
+    document.getElementById("formBox").style.display="none";
+    document.getElementById("hasilBox").style.display="none";
+    document.getElementById("daftarBox").style.display = "block";
+}
+
+function kembali(){
+    document.getElementById("daftarBox").style.display="none";
+    document.getElementById("loginBox").style.display="block";
+}
+
+function lihatTanpaLogin() {
+    tampilkanDaftar();
+}
+
+function cetakTiket(){
+    window.print();
+}
+</script>
+
+</body>
+</html>
