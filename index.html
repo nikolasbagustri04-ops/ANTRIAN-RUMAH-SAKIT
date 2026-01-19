@@ -162,7 +162,7 @@ tr:last-child td {
     <input id="nama" type="text" placeholder="Nama Pasien">
     <select id="penyakit">
         <option value="Gigi">Sakit Gigi</option>
-        <option value="Ringan">Penyakit Ringan</option>
+        <option value="Ringan">Sakit Ringan</option>
         <option value="Mata">Sakit Mata</option>
     </select>
     <button class="btn-primary" onclick="daftar()">Kirim</button>
@@ -211,7 +211,6 @@ function updateTanggalWaktu() {
     const teks = `${hari}, ${tanggal} ${bulan} ${tahun} | ${jam}:${menit}:${detik}`;
     document.getElementById("tanggalWaktu").innerText = teks;
 }
-
 setInterval(updateTanggalWaktu, 1000);
 updateTanggalWaktu();
 
@@ -245,9 +244,12 @@ function daftar() {
 
     document.getElementById("formBox").style.display = "none";
     document.getElementById("hasilBox").style.display = "block";
+
+    // Update daftar secara live
+    updateDaftar();
 }
 
-function tampilkanDaftar(){
+function updateDaftar(){
     let antre = JSON.parse(localStorage.getItem("antrian")) || [];
     let tabel = document.getElementById("tabelAntrian");
     tabel.innerHTML = "<tr><th>No</th><th>Nama</th><th>Ruangan</th></tr>";
@@ -258,12 +260,23 @@ function tampilkanDaftar(){
         row.insertCell(1).innerHTML = p.nama;
         row.insertCell(2).innerHTML = p.ruangan;
     });
+}
 
+// Tampilkan daftar live
+function tampilkanDaftar(){
     document.getElementById("loginBox").style.display="none";
     document.getElementById("formBox").style.display="none";
     document.getElementById("hasilBox").style.display="none";
     document.getElementById("daftarBox").style.display = "block";
+    updateDaftar();
 }
+
+// Auto-update setiap detik jika daftar ditampilkan
+setInterval(()=>{
+    if(document.getElementById("daftarBox").style.display === "block"){
+        updateDaftar();
+    }
+}, 1000);
 
 function kembali(){
     document.getElementById("daftarBox").style.display="none";
