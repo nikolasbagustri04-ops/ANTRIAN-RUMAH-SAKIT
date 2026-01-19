@@ -6,32 +6,33 @@
 <title>Antrian RS - Petugas (Modern)</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 <style>
-    /* Reset & Font */
     * {margin:0; padding:0; box-sizing:border-box; font-family:'Poppins', sans-serif;}
     body {
         min-height: 100vh;
-        background: linear-gradient(135deg, #6a11cb, #2575fc);
+        background-image: url('hospital 2.jpeg');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
         display:flex;
         align-items:center;
         justify-content:center;
         padding:20px;
+        color:white;
+        text-shadow: 1px 1px 2px black;
     }
-    /* Glass Container */
     .container {
-        background: rgba(255,255,255,0.1);
-        backdrop-filter: blur(15px);
-        -webkit-backdrop-filter: blur(15px);
+        background: rgba(0,0,0,0.6);
+        backdrop-filter: blur(10px);
         border-radius: 20px;
         padding: 30px 25px;
         width: 100%;
         max-width: 500px;
         box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-        color: #fff;
         text-align: center;
         animation: fadeIn 1s ease;
     }
     h2 {
-        margin-bottom: 20px;
+        margin-bottom: 15px;
         font-weight: 600;
         font-size: 1.8rem;
         letter-spacing: 1px;
@@ -68,7 +69,7 @@
     /* Table */
     table {
         width: 100%;
-        margin-top: 20px;
+        margin-top: 15px;
         border-collapse: collapse;
         background: rgba(255,255,255,0.1);
         color: #fff;
@@ -105,6 +106,14 @@
         transition:0.3s;
     }
     .logoutBtn:hover {background: rgba(255,255,255,0.4);}
+
+    /* Tanggal & Waktu */
+    #datetime {
+        margin-top: 10px;
+        font-weight: 500;
+        font-size: 0.95rem;
+        color: #ffeb3b;
+    }
 </style>
 </head>
 <body>
@@ -118,6 +127,7 @@
 
 <div class="container" id="antrianBox" style="display:none;">
     <h2>Daftar Antrian Pasien</h2>
+    <div id="datetime"></div>
     <table id="tabelAntrian">
         <tr>
             <th>No</th>
@@ -131,6 +141,7 @@
 
 <script>
 let intervalID = null;
+let clockInterval = null;
 
 function login() {
     if(document.getElementById("username").value === "") return alert("Isi Username");
@@ -140,6 +151,8 @@ function login() {
     
     muatAntrian();
     intervalID = setInterval(muatAntrian, 1000);
+    
+    startClock();
 }
 
 function muatAntrian(){
@@ -165,8 +178,22 @@ function hapus(idx){
 
 function logout(){
     clearInterval(intervalID);
+    clearInterval(clockInterval);
     document.getElementById("antrianBox").style.display="none";
     document.getElementById("loginBox").style.display="block";
+}
+
+// Tanggal & Waktu
+function startClock(){
+    function updateClock(){
+        const now = new Date();
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        const dateStr = now.toLocaleDateString('id-ID', options);
+        const timeStr = now.toLocaleTimeString('id-ID');
+        document.getElementById("datetime").innerHTML = `${dateStr} | ${timeStr}`;
+    }
+    updateClock();
+    clockInterval = setInterval(updateClock, 1000);
 }
 </script>
 
